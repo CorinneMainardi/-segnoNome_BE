@@ -2,8 +2,11 @@ package it.epicode.segnoNome.modules.controllers;
 
 import it.epicode.segnoNome.auth.services.AppUserService;
 import it.epicode.segnoNome.auth.utils.JwtTokenUtil;
+import it.epicode.segnoNome.modules.dto.DictionaryRequest;
 import it.epicode.segnoNome.modules.dto.VideoClassRequest;
+import it.epicode.segnoNome.modules.entities.Dictionary;
 import it.epicode.segnoNome.modules.entities.VideoClass;
+import it.epicode.segnoNome.modules.services.DictionarySvc;
 import it.epicode.segnoNome.modules.services.UserRoleSvc;
 import it.epicode.segnoNome.modules.services.VideoClassSvc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +17,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@RestController
-@RequestMapping("/api/videoClasses")
-public class VideoClassController {
 
+@RestController
+@RequestMapping("/api/dictionary")
+public class DictionaryController {
     @Autowired
-    private VideoClassSvc videoClassSvc;
+    private DictionarySvc dictionarySvc;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
@@ -29,31 +32,31 @@ public class VideoClassController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
-    public ResponseEntity<List<VideoClass>> getAllVideoClasses(
-            @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user) {
+    public ResponseEntity<List<Dictionary>> getAllDictionaryVideos(
+            @AuthenticationPrincipal it.epicode.segnoNome.auth.entities.AppUser user) {
         String username = user.getUsername();
         userRoleSvc.allowedToallRoles(username);
 
-        return ResponseEntity.ok(videoClassSvc.getAllVideoClasses());
+        return ResponseEntity.ok(dictionarySvc.getAllDictionaryVideos());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<VideoClass> getVideoClassById(@AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user, @PathVariable Long id) {
+    public ResponseEntity<Dictionary> getDictionaryVideoById(@AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user, @PathVariable Long id) {
 
         String username = user.getUsername();
 
         userRoleSvc.allowedToallRoles(username);
 
-        return ResponseEntity.ok(videoClassSvc.getVideoClassById(id));
+        return ResponseEntity.ok(dictionarySvc.getDictionaryVideoById(id));
     }
 
 
 
     @PostMapping
     @PreAuthorize("hasRole('CREATOR')")
-    public ResponseEntity<VideoClass> createVideoClass(
-            @RequestBody VideoClassRequest newVideoClass,
+    public ResponseEntity<Dictionary> createDictionaryVideo(
+            @RequestBody DictionaryRequest newDictionaryVideo,
             @AuthenticationPrincipal it.epicode.segnoNome.auth.entities.AppUser user
     ) {
 
@@ -65,44 +68,31 @@ public class VideoClassController {
         System.out.println("Username autenticato: " + username);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(videoClassSvc.createVideoClass(newVideoClass, username));
+                .body(dictionarySvc.createDictionaryVideo(newDictionaryVideo, username));
     }
 
 
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('CREATOR')")
-    public ResponseEntity<VideoClass> updateVideoClass(@RequestBody VideoClassRequest newVideoClass, @PathVariable Long id, @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user) {
+    public ResponseEntity<Dictionary> updateDictionaryVideo(@RequestBody DictionaryRequest newDictionaryVideo, @PathVariable Long id, @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user) {
         String username = user.getUsername();
         userRoleSvc.allowedToCreator(username);
 
 
-        return ResponseEntity.ok(videoClassSvc.updateVideoClass(id,newVideoClass,username));
+        return ResponseEntity.ok(dictionarySvc.updateDictionaryVideo(id,newDictionaryVideo,username));
     }
 
 
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('CREATOR')")
-    public ResponseEntity<VideoClass> deleteVideoClass(@PathVariable Long id, @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user){
+    public ResponseEntity<Dictionary> deleteDictionaryVideo(@PathVariable Long id, @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user){
         String username = user.getUsername();
 
         userRoleSvc.allowedToCreator(username);
 
-        return ResponseEntity.ok(videoClassSvc.deleteVideoClass(id));
+        return ResponseEntity.ok(dictionarySvc.deleteDictionaryVideo(id));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 

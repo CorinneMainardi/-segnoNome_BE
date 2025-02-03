@@ -10,5 +10,5 @@ public class DictionaryRequest {
     @NotBlank(message = "the field 'description' cannot be blank")
     private String description;
     @NotBlank(message = "the field 'video' cannot be blank")
-    private String videoDictionaryUrl;
+    private String dictionaryVideoUrl;
 }

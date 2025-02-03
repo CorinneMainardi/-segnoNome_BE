@@ -31,7 +31,7 @@ public class VideoClassSvc {
 
     public VideoClass getVideoClassById(Long id){
         if(!videoClassRepository.existsById(id)){
-            throw new EntityNotFoundException("Event not found");
+            throw new EntityNotFoundException("Video not found");
         }
         return videoClassRepository.findById(id).get();
     }
