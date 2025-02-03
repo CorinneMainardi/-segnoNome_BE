@@ -39,17 +39,20 @@ public class UserRoleSvc {
         }
     }
     public AppUser allowedToCreator(String username) {
-        // Recupera l'utente AppUser dal database usando lo username
+        if (username == null) {
+            throw new RuntimeException("username è NULL in allowedToCreator!");
+        }
+
         AppUser appUser = appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UnauthorizedException("User not found"));
 
-        // Controlla il ruolo dell'utente
         if (appUser.getRoles().contains(Role.ROLE_CREATOR)) {
-            return appUser;  // Restituisci l'utente se ha il ruolo 'CREATOR'
+            return appUser;
         } else {
             throw new UnauthorizedException("Access denied: user does not have the necessary privileges");
         }
     }
+
 
 
 }

@@ -14,7 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RestController
+@RequestMapping("/api/videoClasses")
 public class VideoClassController {
 
     @Autowired
@@ -29,7 +30,7 @@ public class VideoClassController {
     @GetMapping("/paged")
     @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
     public ResponseEntity<List<VideoClass>> getAllVideoClasses(
-            @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+            @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user) {
         String username = user.getUsername();
         userRoleSvc.allowedToallRoles(username);
 
@@ -38,7 +39,7 @@ public class VideoClassController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<VideoClass> findById(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, @PathVariable Long id) {
+    public ResponseEntity<VideoClass> findById(@AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user, @PathVariable Long id) {
 
         String username = user.getUsername();
 
@@ -48,22 +49,30 @@ public class VideoClassController {
     }
 
 
+
     @PostMapping
     @PreAuthorize("hasRole('CREATOR')")
     public ResponseEntity<VideoClass> createVideoClass(
             @RequestBody VideoClassRequest newVideoClass,
-            @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+            @AuthenticationPrincipal it.epicode.segnoNome.auth.entities.AppUser user
+    ) {
+
+        if (user == null) {
+            throw new RuntimeException("AuthenticationPrincipal è NULL! Il token non è stato elaborato correttamente.");
+        }
+
         String username = user.getUsername();
-        userRoleSvc.allowedToCreator(username);
+        System.out.println("Username autenticato: " + username);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(videoClassSvc.createVideoClass(newVideoClass, username)); // Passa il 'username' invece di 'user'
+                .body(videoClassSvc.createVideoClass(newVideoClass, username));
     }
 
 
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('CREATOR')")
-    public ResponseEntity<VideoClass> updateVideoClass(@RequestBody VideoClassRequest newVideoClass, @PathVariable Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+    public ResponseEntity<VideoClass> updateVideoClass(@RequestBody VideoClassRequest newVideoClass, @PathVariable Long id, @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user) {
         String username = user.getUsername();
         userRoleSvc.allowedToCreator(username);
 
@@ -75,7 +84,7 @@ public class VideoClassController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('CREATOR')")
-    public ResponseEntity<VideoClass> deleteVideoClass(@PathVariable Long id, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user){
+    public ResponseEntity<VideoClass> deleteVideoClass(@PathVariable Long id, @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user){
         String username = user.getUsername();
 
         userRoleSvc.allowedToCreator(username);
