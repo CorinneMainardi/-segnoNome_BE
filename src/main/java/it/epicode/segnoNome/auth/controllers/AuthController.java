@@ -1,0 +1,48 @@
+package it.epicode.segnoNome.auth.controllers;
+
+
+import it.epicode.segnoNome.auth.dto.requests.LoginRequest;
+import it.epicode.segnoNome.auth.dto.requests.RegisterRequest;
+import it.epicode.segnoNome.auth.dto.responses.AuthResponse;
+import it.epicode.segnoNome.auth.enums.Role;
+import it.epicode.segnoNome.auth.services.AppUserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AppUserService appUserService;
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ROLE_USER);
+        appUserService.registerUser(
+                registerRequest.getUsername(),
+                registerRequest.getPassword(),
+                roles
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body("Registrazione avvenuta con successo");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        String token = appUserService.authenticateUser(
+                loginRequest.getUsername(),
+                loginRequest.getPassword()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
+
+    }
+}
