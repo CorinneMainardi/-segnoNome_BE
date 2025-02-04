@@ -10,6 +10,7 @@ import it.epicode.segnoNome.auth.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class AuthController {
 
         private final AppUserService appUserService;
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AppUser>> getAllUsers() {
         List<AppUser> users = appUserService.getAllUsers();
         return ResponseEntity.ok(users);
