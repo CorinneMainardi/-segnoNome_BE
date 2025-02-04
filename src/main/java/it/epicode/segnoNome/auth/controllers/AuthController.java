@@ -4,15 +4,14 @@ package it.epicode.segnoNome.auth.controllers;
 import it.epicode.segnoNome.auth.dto.requests.LoginRequest;
 import it.epicode.segnoNome.auth.dto.requests.RegisterRequest;
 import it.epicode.segnoNome.auth.dto.responses.AuthResponse;
+import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
 import it.epicode.segnoNome.auth.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +21,17 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AppUserService appUserService;
+        private final AppUserService appUserService;
+
+
+        @GetMapping("/me")
+        public ResponseEntity<AppUser> getCurrentUser(@AuthenticationPrincipal AppUser user) {
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            return ResponseEntity.ok(user);
+        }
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
