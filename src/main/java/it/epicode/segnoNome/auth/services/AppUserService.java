@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,7 +50,9 @@ public class AppUserService {
 
         return appUserRepository.save(appUser);
     }
-
+    public List<AppUser> getAllUsers() {
+        return appUserRepository.findAll();
+    }
 
     public Optional<AppUser> findByUsername(String username) {
         return appUserRepository.findByUsername(username);

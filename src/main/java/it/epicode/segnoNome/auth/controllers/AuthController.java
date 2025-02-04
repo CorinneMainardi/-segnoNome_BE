@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -22,7 +23,11 @@ import java.util.Set;
 public class AuthController {
 
         private final AppUserService appUserService;
-
+    @GetMapping("/users")
+    public ResponseEntity<List<AppUser>> getAllUsers() {
+        List<AppUser> users = appUserService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
 
         @GetMapping("/me")
         public ResponseEntity<AppUser> getCurrentUser(@AuthenticationPrincipal AppUser user) {
