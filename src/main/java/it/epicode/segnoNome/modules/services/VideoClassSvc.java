@@ -2,6 +2,7 @@ package it.epicode.segnoNome.modules.services;
 
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
+import it.epicode.segnoNome.auth.repositories.AppUserRepository;
 import it.epicode.segnoNome.modules.dto.VideoClassRequest;
 import it.epicode.segnoNome.modules.entities.VideoClass;
 import it.epicode.segnoNome.modules.exceptions.InternalServerErrorException;
@@ -21,6 +22,8 @@ import java.util.List;
 @Service
 public class VideoClassSvc {
     @Autowired
+    AppUserRepository appUserRepository;
+    @Autowired
     VideoClassRepository videoClassRepository;
     @Autowired
     UserRoleSvc userRoleSvc;
@@ -36,13 +39,14 @@ public class VideoClassSvc {
         return videoClassRepository.findById(id).get();
     }
 
-    public VideoClass createVideoClass(@Valid VideoClassRequest videoClassRequest, String username) {
+    public VideoClass createVideoClass(@Valid VideoClassRequest videoClassRequest,  String username) {
         try {
 
-            AppUser appUser = userRoleSvc.allowedToCreator(username);
+           // AppUser appUser = userRoleSvc.allowedToCreator(username);
 
             VideoClass videoClass = new VideoClass();
             BeanUtils.copyProperties(videoClassRequest, videoClass);
+            AppUser appUser = appUserRepository.findByUsername(username).get();
             videoClass.setCreator(appUser);
 
             return videoClassRepository.save(videoClass);  // Salva la video class nel repository

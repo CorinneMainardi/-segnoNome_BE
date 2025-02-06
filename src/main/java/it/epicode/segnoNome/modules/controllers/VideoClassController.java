@@ -50,7 +50,7 @@ public class VideoClassController {
 
 
 
-    @PostMapping
+    @PostMapping()
     @PreAuthorize("hasRole('CREATOR')")
     public ResponseEntity<VideoClass> createVideoClass(
             @RequestBody VideoClassRequest newVideoClass,
@@ -61,11 +61,11 @@ public class VideoClassController {
             throw new RuntimeException("AuthenticationPrincipal è NULL! Il token non è stato elaborato correttamente.");
         }
 
-        String username = user.getUsername();
-        System.out.println("Username autenticato: " + username);
+       String username = user.getUsername();
+        userRoleSvc.allowedToCreator(username);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(videoClassSvc.createVideoClass(newVideoClass, username));
+                .body(videoClassSvc.createVideoClass(newVideoClass,username)); //username
     }
 
 
