@@ -38,7 +38,7 @@ public class VideoClassSvc {
         }
         return videoClassRepository.findById(id).get();
     }
-
+@Transactional
     public VideoClass createVideoClass(@Valid VideoClassRequest videoClassRequest,  String username) {
         try {
 

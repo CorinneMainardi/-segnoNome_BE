@@ -27,8 +27,7 @@ public class VideoClassController {
     @Autowired
     private UserRoleSvc userRoleSvc;
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
+   @GetMapping
     public ResponseEntity<List<VideoClass>> getAllVideoClasses(
             @AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user) {
         String username = user.getUsername();
@@ -38,7 +37,7 @@ public class VideoClassController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+
     public ResponseEntity<VideoClass> getVideoClassById(@AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user, @PathVariable Long id) {
 
         String username = user.getUsername();

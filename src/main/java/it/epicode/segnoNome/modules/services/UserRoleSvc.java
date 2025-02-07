@@ -19,7 +19,7 @@ public class UserRoleSvc {
     public String allowedToallRoles(String username) { AppUser appUser= appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new it.epicode.segnoNome.modules.exceptions.UnauthorizedException("User not found"));
 
-        if (appUser.getRoles().contains(Role.ROLE_USER) || appUser.getRoles().contains(Role.ROLE_ADMIN)) {
+        if (appUser.getRoles().contains(Role.ROLE_USER) || appUser.getRoles().contains(Role.ROLE_ADMIN) || appUser.getRoles().contains(Role.ROLE_CREATOR)) {
             return appUser.getUsername();
         } else {
             throw new UnauthorizedException("Access denied: user does not have the necessary privileges");
