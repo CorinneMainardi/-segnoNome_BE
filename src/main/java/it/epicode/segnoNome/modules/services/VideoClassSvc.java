@@ -42,7 +42,7 @@ public class VideoClassSvc {
     public VideoClass createVideoClass(@Valid VideoClassRequest videoClassRequest,  String username) {
         try {
 
-           // AppUser appUser = userRoleSvc.allowedToCreator(username);
+
 
             VideoClass videoClass = new VideoClass();
             BeanUtils.copyProperties(videoClassRequest, videoClass);
@@ -58,7 +58,7 @@ public class VideoClassSvc {
     }
 
 
-
+    @Transactional
     public VideoClass updateVideoClass(Long id, @Valid VideoClassRequest videoClassRequest, String username) {
         try {
 

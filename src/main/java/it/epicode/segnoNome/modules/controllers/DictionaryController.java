@@ -31,7 +31,7 @@ public class DictionaryController {
     private UserRoleSvc userRoleSvc;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
+
     public ResponseEntity<List<Dictionary>> getAllDictionaryVideos(
             @AuthenticationPrincipal it.epicode.segnoNome.auth.entities.AppUser user) {
         String username = user.getUsername();
@@ -41,7 +41,7 @@ public class DictionaryController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+
     public ResponseEntity<Dictionary> getDictionaryVideoById(@AuthenticationPrincipal  it.epicode.segnoNome.auth.entities.AppUser user, @PathVariable Long id) {
 
         String username = user.getUsername();

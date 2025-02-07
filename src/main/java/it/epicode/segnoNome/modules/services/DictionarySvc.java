@@ -1,6 +1,7 @@
 package it.epicode.segnoNome.modules.services;
 
 import it.epicode.segnoNome.auth.entities.AppUser;
+import it.epicode.segnoNome.auth.repositories.AppUserRepository;
 import it.epicode.segnoNome.modules.dto.DictionaryRequest;
 import it.epicode.segnoNome.modules.dto.VideoClassRequest;
 import it.epicode.segnoNome.modules.entities.Dictionary;
@@ -19,9 +20,14 @@ import java.util.List;
 @Service
 public class DictionarySvc {
     @Autowired
+    AppUserRepository appUserRepository;
+    @Autowired
     DictionaryRepository dictionaryRepository;
     @Autowired
     UserRoleSvc userRoleSvc;
+
+
+
     public List<Dictionary> getAllDictionaryVideos(){
         return dictionaryRepository.findAll();
     }
@@ -32,14 +38,15 @@ public class DictionarySvc {
         }
         return dictionaryRepository.findById(id).get();
     }
-
+    @Transactional
     public Dictionary createDictionaryVideo(@Valid DictionaryRequest dictionaryRequest, String username) {
         try {
 
-            AppUser appUser = userRoleSvc.allowedToCreator(username);
+
 
             Dictionary  dictionary= new Dictionary();
             BeanUtils.copyProperties(dictionaryRequest, dictionary);
+            AppUser appUser = appUserRepository.findByUsername(username).get();
             dictionary.setCreator(appUser);
 
             return dictionaryRepository.save(dictionary);  // Salva la video class nel repository
@@ -51,7 +58,7 @@ public class DictionarySvc {
     }
 
 
-
+    @Transactional
     public Dictionary updateDictionaryVideo(Long id, @Valid DictionaryRequest dictionaryRequest, String username) {
         try {
 
