@@ -13,7 +13,7 @@ public class Dictionary {
     private Long id;
     private String title;
     private String description;
-    private String dictionaryVideoUrl;
+    private String dictionaryUrl;
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private AppUser creator;

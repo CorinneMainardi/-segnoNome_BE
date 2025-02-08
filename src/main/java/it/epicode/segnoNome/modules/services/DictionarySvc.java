@@ -38,12 +38,12 @@ public class DictionarySvc {
         }
         return dictionaryRepository.findById(id).get();
     }
+
+
+
     @Transactional
     public Dictionary createDictionaryVideo(@Valid DictionaryRequest dictionaryRequest, String username) {
         try {
-
-
-
             Dictionary  dictionary= new Dictionary();
             BeanUtils.copyProperties(dictionaryRequest, dictionary);
             AppUser appUser = appUserRepository.findByUsername(username).get();
