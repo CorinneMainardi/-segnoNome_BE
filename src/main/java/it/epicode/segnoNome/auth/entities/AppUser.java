@@ -40,10 +40,10 @@ public class AppUser implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Dictionary> favoritesD; // ✅ Lista dei preferiti
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Dictionary> favoritesD;
 
-    private String imgUrl; // ✅ URL dell'immagine dell'utente (Cloudinary)
+    private String imgUrl;
 
 
     @Override

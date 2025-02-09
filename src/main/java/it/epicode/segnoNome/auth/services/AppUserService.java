@@ -1,12 +1,15 @@
 package it.epicode.segnoNome.auth.services;
 
 
+import it.epicode.segnoNome.auth.dto.requests.UserImgDTO;
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
 import it.epicode.segnoNome.auth.repositories.AppUserRepository;
 import it.epicode.segnoNome.auth.utils.JwtTokenUtil;
+import it.epicode.segnoNome.modules.services.CloudinarySvc;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +41,29 @@ public class AppUserService {
     private JwtTokenUtil jwtTokenUtil;
 
 
-    public AppUser registerUser(String username, String password, Set<Role> roles) {
+
+    @Autowired
+    private CloudinarySvc cloudinarySvc;
+
+    /**
+     * ✅ Carica e aggiorna l'immagine del profilo utente
+     */
+    @Transactional
+    public AppUser uploadUserImage(Long userId, UserImgDTO imgRequest) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // ✅ Carica l'immagine su Cloudinary e ottieni l'URL
+        String imageUrl = cloudinarySvc.uploadImage(imgRequest.getImg());
+
+        // ✅ Salva l'URL nel database
+        user.setImgUrl(imageUrl);
+        return appUserRepository.save(user);
+    }
+
+
+
+    public AppUser registerUser(String username, String password, String firstName, String lastName, Set<Role> roles) {
         if (appUserRepository.existsByUsername(username)) {
             throw new EntityExistsException("Username già in uso");
         }
@@ -46,6 +71,8 @@ public class AppUserService {
         AppUser appUser = new AppUser();
         appUser.setUsername(username);
         appUser.setPassword(passwordEncoder.encode(password));
+        appUser.setFirstName(firstName);
+        appUser.setLastName(lastName);
         appUser.setRoles(roles);
 
         return appUserRepository.save(appUser);

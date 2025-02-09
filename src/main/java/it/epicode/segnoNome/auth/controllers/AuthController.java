@@ -43,11 +43,15 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         Set<Role> roles = new HashSet<>();
         roles.add(Role.ROLE_USER);
+
         appUserService.registerUser(
                 registerRequest.getUsername(),
                 registerRequest.getPassword(),
+                registerRequest.getFirstName(),
+                registerRequest.getLastName(),
                 roles
         );
+
         return ResponseEntity.status(HttpStatus.CREATED).body("Registrazione avvenuta con successo");
     }
 
