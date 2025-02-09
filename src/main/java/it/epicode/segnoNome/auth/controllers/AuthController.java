@@ -3,6 +3,7 @@ package it.epicode.segnoNome.auth.controllers;
 
 import it.epicode.segnoNome.auth.dto.requests.LoginRequest;
 import it.epicode.segnoNome.auth.dto.requests.RegisterRequest;
+import it.epicode.segnoNome.auth.dto.requests.UserImgDTO;
 import it.epicode.segnoNome.auth.dto.responses.AuthResponse;
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
@@ -53,6 +54,11 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Registrazione avvenuta con successo");
+    }
+
+    @PutMapping("/me/{id}/upload-image")
+    public ResponseEntity<AppUser>uploadUserImage(@RequestBody UserImgDTO userImgDTO, @PathVariable Long id){
+        return  ResponseEntity.status(HttpStatus.CREATED).body(appUserService.uploadUserImage( id, userImgDTO));
     }
 
     @PostMapping("/login")
