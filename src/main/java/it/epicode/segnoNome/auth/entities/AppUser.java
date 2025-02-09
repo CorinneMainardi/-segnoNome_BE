@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +41,10 @@ public class AppUser implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Dictionary> favoritesD;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Dictionary> favoritesD = new ArrayList<>();
+
 
     private String imgUrl;
 

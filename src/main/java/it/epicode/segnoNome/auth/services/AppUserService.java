@@ -6,6 +6,8 @@ import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
 import it.epicode.segnoNome.auth.repositories.AppUserRepository;
 import it.epicode.segnoNome.auth.utils.JwtTokenUtil;
+import it.epicode.segnoNome.modules.entities.Dictionary;
+import it.epicode.segnoNome.modules.repositories.DictionaryRepository;
 import it.epicode.segnoNome.modules.services.CloudinarySvc;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,8 +43,8 @@ public class AppUserService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-
-
+    @Autowired
+    private DictionaryRepository dictionaryRepository;
     @Autowired
     private CloudinarySvc cloudinarySvc;
 
@@ -105,5 +108,29 @@ public class AppUserService {
 
 
         return appUser;
+    }
+
+    @Transactional
+    public AppUser addFavoriteD(Long userId, Long dictionaryId) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Dictionary dictionary = dictionaryRepository.findById(dictionaryId)
+                .orElseThrow(() -> new EntityNotFoundException("Dictionary entry not found"));
+
+        // ✅ Evita duplicati nei preferiti
+        if (!user.getFavoritesD().contains(dictionary)) {
+            user.getFavoritesD().add(dictionary);
+            appUserRepository.save(user);
+        }
+
+        return user;
+    }
+
+    public List<Dictionary> getFavoritesD(Long userId) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return new ArrayList<>(user.getFavoritesD()); // ✅ Evita problemi di Lazy Loading
     }
 }

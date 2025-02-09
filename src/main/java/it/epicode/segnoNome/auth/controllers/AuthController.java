@@ -8,6 +8,7 @@ import it.epicode.segnoNome.auth.dto.responses.AuthResponse;
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
 import it.epicode.segnoNome.auth.services.AppUserService;
+import it.epicode.segnoNome.modules.entities.Dictionary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,4 +71,16 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
 
     }
+
+    @PutMapping("/add-favorite/{dictionaryId}")
+    public ResponseEntity<AppUser> addFavoriteD(@AuthenticationPrincipal AppUser user,
+                                                @PathVariable Long dictionaryId) {
+        return ResponseEntity.ok(appUserService.addFavoriteD(user.getId(), dictionaryId));
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<List<Dictionary>> getFavoritesD(@AuthenticationPrincipal AppUser user) {
+        return ResponseEntity.ok(appUserService.getFavoritesD(user.getId()));
+    }
+
 }
