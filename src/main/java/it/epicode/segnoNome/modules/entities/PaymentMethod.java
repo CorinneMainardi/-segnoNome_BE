@@ -17,6 +17,7 @@ public class PaymentMethod {
     private AppUser user;
 
     private String cardNumber;
+    private String cvv;
     private String expirationDate;
     private String cardHolderName;
     private String type;
