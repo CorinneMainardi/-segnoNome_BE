@@ -2,6 +2,7 @@ package it.epicode.segnoNome.auth.entities;
 
 
 import it.epicode.segnoNome.auth.enums.Role;
+import it.epicode.segnoNome.modules.entities.Dictionary;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,18 @@ public class AppUser implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Dictionary> favoritesD; // ✅ Lista dei preferiti
+
+    private String imgUrl; // ✅ URL dell'immagine dell'utente (Cloudinary)
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
