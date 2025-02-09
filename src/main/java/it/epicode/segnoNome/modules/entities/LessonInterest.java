@@ -1,15 +1,18 @@
 package it.epicode.segnoNome.modules.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import it.epicode.segnoNome.auth.entities.AppUser;
+import it.epicode.segnoNome.modules.enums.LessonType;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 
 @Entity
-@Table(name = "lessons_interests")
+@Table(name = "lesson_interests")
 @Data
 public class LessonInterest {
 
@@ -17,30 +20,41 @@ public class LessonInterest {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-   private String firstName;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser user;  // Utente che fa la richiesta
 
+    @Column(nullable = false)
+    private String firstName;
 
+    @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    private String contactInfo;
+    @Column(nullable = false)
+    private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LessonType lessonType;  // ONLINE o IN_PERSON
 
-    private String lessonType; // "Online", "In presenza", "Entrambe"
+    @Column(nullable = false)
+    private String preferredDays;  // Es. "Lunedì, Mercoledì"
 
-    @ElementCollection
-    private List<String> availableDays; // Lunedì, Martedì, ecc.
+    @Column(nullable = false)
+    private String preferredTimes; // Es. "10:00 - 12:00"
 
-    @ElementCollection
-    private List<LocalTime> availableTimeSlots; // Fasce orarie disponibili
+    private String city;  // Solo se lezione in presenza
 
-    @Column(length = 2000)
-    private String notes; // Modificabile solo dal Creator
+    private boolean contacted = false;  // Se l'utente è stato ricontattato
+    private boolean interested = false; // Se è interessato dopo il contatto
+    private boolean toBeRecontacted = false; // Se deve essere ricontattato in futuro
 
-    @Column
-    private Boolean contacted; // Se il Creator ha chiamato l'utente
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
-    private AppUser creator; // Chi gestisce la richiesta
+    @Column(columnDefinition = "TEXT")  // Permette di inserire testi lunghi
+    private String note;  // Campo modificabile dal CREATOR
+    private boolean handled= false;
 }

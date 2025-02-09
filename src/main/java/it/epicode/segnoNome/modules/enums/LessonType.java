@@ -1,4 +1,4 @@
-package it.epicode.segnoNome.auth.enums;
+package it.epicode.segnoNome.modules.enums;
 
 public enum LessonType {
     ONLINE,

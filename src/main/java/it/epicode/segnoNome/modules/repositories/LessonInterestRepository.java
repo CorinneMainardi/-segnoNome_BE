@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface LessonInterestRepository extends JpaRepository<LessonInterest, Long> {
 
+    List<LessonInterest> findByHandledTrue();  // Ottiene solo le richieste gestite
 
-    //List<LessonInterest> findByUserUsername(String username);
+    List<LessonInterest> findByHandledFalse();
 }

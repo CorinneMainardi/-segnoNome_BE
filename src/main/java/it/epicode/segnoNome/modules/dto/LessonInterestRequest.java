@@ -1,5 +1,7 @@
 package it.epicode.segnoNome.modules.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import it.epicode.segnoNome.modules.enums.LessonType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -8,22 +10,15 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)  // Evita valori nulli nel JSON
 public class LessonInterestRequest {
-    @NotBlank (message = "the field 'name' cannot be blank")
     private String firstName;
-
-    @NotBlank (message = "the field 'last name' cannot be blank")
     private String lastName;
+    private String email;
+    private String phoneNumber;
+    private LessonType lessonType;
+    private String preferredDays;
+    private String preferredTimes;
+    private String city;  // Solo per lezioni in presenza
 
-    @NotBlank(message = "the field 'contact info' cannot be blank")
-    private String contactInfo;
-
-    @NotBlank(message = "the field 'lesson type' cannot be blank")
-    private String lessonType; // "Online", "In presenza", "Entrambe"
-
-    @NotEmpty(message = "the field 'avaible days' cannot be empty")
-    private List<String> availableDays;
-
-    @NotEmpty(message = "the field 'avaible time' cannot be empty")
-    private List<LocalTime> availableTimeSlots;
 }
