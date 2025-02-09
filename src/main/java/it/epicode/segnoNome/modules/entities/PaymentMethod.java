@@ -1,6 +1,7 @@
 package it.epicode.segnoNome.modules.entities;
 
 import it.epicode.segnoNome.auth.entities.AppUser;
+import it.epicode.segnoNome.modules.enums.PaymentType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,5 +21,7 @@ public class PaymentMethod {
     private String cvv;
     private String expirationDate;
     private String cardHolderName;
-    private String type;
+    @Enumerated(EnumType.STRING) // 🔹 Usa l'ENUM invece di una stringa
+    @Column(nullable = false)
+    private PaymentType type;
 }

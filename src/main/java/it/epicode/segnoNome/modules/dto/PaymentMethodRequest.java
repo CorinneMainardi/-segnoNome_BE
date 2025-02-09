@@ -1,6 +1,7 @@
 package it.epicode.segnoNome.modules.dto;
 
 import it.epicode.segnoNome.auth.entities.AppUser;
+import it.epicode.segnoNome.modules.enums.PaymentType;
 
 public class PaymentMethodRequest {
     private AppUser user;
@@ -9,5 +10,5 @@ public class PaymentMethodRequest {
     private String expirationDate;
     private String cardHolderName;
     private String cvv;
-    private String type;
+    private PaymentType type;
 }
