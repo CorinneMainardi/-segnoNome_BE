@@ -41,9 +41,14 @@ public class AppUser implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "dictionary_id")
+    )
     private List<Dictionary> favoritesD = new ArrayList<>();
+
 
 
     private String imgUrl;
