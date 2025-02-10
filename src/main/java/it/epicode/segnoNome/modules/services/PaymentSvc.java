@@ -2,9 +2,11 @@ package it.epicode.segnoNome.modules.services;
 
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.repositories.AppUserRepository;
+import it.epicode.segnoNome.modules.dto.PaymentMethodRequest;
 import it.epicode.segnoNome.modules.entities.PaymentMethod;
 import it.epicode.segnoNome.modules.repositories.PaymentMethodRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,14 @@ public class PaymentSvc {
     private AppUserRepository appUserRepository;
 
     @Transactional
-    public PaymentMethod addPaymentMethod(Long userId, PaymentMethod paymentMethod) {
-        AppUser user = appUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+    public PaymentMethod addPaymentMethod(AppUser user, PaymentMethodRequest paymentMethodRequest) {
+        PaymentMethod paymentMethod = new PaymentMethod();
 
-        paymentMethod.setUser(user);
+        // ✅ Copia automaticamente tutte le proprietà con lo stesso nome
+        BeanUtils.copyProperties(paymentMethodRequest, paymentMethod);
+
+        paymentMethod.setUser(user); // ✅ Assegna l'utente separatamente perché non è nel DTO
+
         return paymentMethodRepository.save(paymentMethod);
     }
 
