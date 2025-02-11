@@ -32,7 +32,7 @@ public class AuthController {
         return ResponseEntity.ok(users);
     }
 
-        @GetMapping("/me")
+    @GetMapping("/me")
         public ResponseEntity<AppUser> getCurrentUser(@AuthenticationPrincipal AppUser user) {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
