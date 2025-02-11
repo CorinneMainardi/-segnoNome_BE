@@ -53,6 +53,9 @@ public class AppUser implements UserDetails {
 
     private String imgUrl;
 
+    @Column(nullable = false)
+    private boolean hasPaid = false;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

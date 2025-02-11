@@ -33,7 +33,13 @@ public class PaymentController {
         return ResponseEntity.ok(paymentSvc.addPaymentMethod(user, paymentMethodRequest));
     }
 
-
+    @GetMapping("/hasPaid")
+    public ResponseEntity<Boolean> hasUserPaid(@AuthenticationPrincipal AppUser user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(user.isHasPaid());
+    }
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PaymentMethod>> getUserPayments(@PathVariable Long userId) {
         return ResponseEntity.ok(paymentSvc.getUserPayments(userId));

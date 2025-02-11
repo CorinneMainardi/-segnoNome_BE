@@ -23,13 +23,17 @@ public class PaymentSvc {
     @Transactional
     public PaymentMethod addPaymentMethod(AppUser user, PaymentMethodRequest paymentMethodRequest) {
         PaymentMethod paymentMethod = new PaymentMethod();
-
-        // ✅ Copia automaticamente tutte le proprietà con lo stesso nome
         BeanUtils.copyProperties(paymentMethodRequest, paymentMethod);
+        paymentMethod.setUser(user);
 
-        paymentMethod.setUser(user); // ✅ Assegna l'utente separatamente perché non è nel DTO
+        // ✅ Salva il metodo di pagamento
+        paymentMethodRepository.save(paymentMethod);
 
-        return paymentMethodRepository.save(paymentMethod);
+        // ✅ Aggiorna lo stato del pagamento dell'utente
+        user.setHasPaid(true);
+        appUserRepository.save(user);
+
+        return paymentMethod;
     }
 
     public List<PaymentMethod> getUserPayments(Long userId) {

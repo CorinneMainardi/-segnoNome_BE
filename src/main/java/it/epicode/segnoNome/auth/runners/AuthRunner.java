@@ -24,24 +24,23 @@ public class AuthRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //Optional<AppUser> adminUser = appUserService.findByUsername("admin");
-       // if (adminUser.isEmpty()) {
-           // appUserService.registerUser("admin", "adminpwd", "NomeAdmin", "CognomeAdmin", Set.of(Role.ROLE_ADMIN));
-       // }
+        //Optional<AppUser> adminUser = appUserService.findByUsername("admin2");
+      // if (adminUser.isEmpty()) {
+          // appUserService.registerUser("admin2", "adminpwd", "NomeAdmin", "CognomeAdmin", Set.of(Role.ROLE_ADMIN));
+    //  }
 
         // Creazione dell'utente creator se non esiste
-      //  Optional<AppUser> creatorUser = appUserService.findByUsername("creator");
+      // Optional<AppUser> creatorUser = appUserService.findByUsername("creator");
         //if (creatorUser.isEmpty()) {
-           // appUserService.registerUser("creator", "creatorpwd", "NomeCreator", "CognomeCreator", Set.of(Role.ROLE_CREATOR));
-        //}
+           //appUserService.registerUser("creator2", "creatorpwd", "NomeCreator", "CognomeCreator", Set.of(Role.ROLE_CREATOR));
+       // }
 
         // Creazione dell'utente user se non esiste
         //Optional<AppUser> normalUser = appUserService.findByUsername("user");
        // if (normalUser.isEmpty()) {
-         //   appUserService.registerUser("user", "userpwd", "NomeUser", "CognomeUser", Set.of(Role.ROLE_USER));
-       // }
-  //  }
+       //    appUserService.registerUser("user2", "userpwd", "NomeUser", "CognomeUser", Set.of(Role.ROLE_USER));
+        //}
     }
-}
+    }
 
 
