@@ -7,6 +7,7 @@ import it.epicode.segnoNome.auth.dto.requests.UserImgDTO;
 import it.epicode.segnoNome.auth.dto.responses.AuthResponse;
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
+import it.epicode.segnoNome.auth.exceptions.InvalidCredentialsException;
 import it.epicode.segnoNome.auth.services.AppUserService;
 import it.epicode.segnoNome.modules.entities.Dictionary;
 import lombok.RequiredArgsConstructor;
@@ -62,16 +63,30 @@ public class AuthController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(appUserService.uploadUserImage( id, userImgDTO));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
-        String token = appUserService.authenticateUser(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
+   // @PostMapping("/login")
+    //public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+       // String token = appUserService.authenticateUser(
+              //  loginRequest.getUsername(),
+                //loginRequest.getPassword()
+        //);
+        //return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
 
-    }
-
+   // }
+   @PostMapping("/login")
+   public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+       try {
+           String token = appUserService.authenticateUser(
+                   loginRequest.getUsername(),
+                   loginRequest.getPassword()
+           );
+           return ResponseEntity.ok(new AuthResponse(token)); // ✅ 200 OK invece di 201
+       } catch (InvalidCredentialsException e) {
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"error\": \"" + e.getMessage() + "\"}");
+       } catch (Exception e) {
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                   .body("{\"error\": \"Errore interno del server.\"}");
+       }
+   }
     @PutMapping("/add-favorite/{dictionaryId}")
     public ResponseEntity<AppUser> addFavoriteD(@AuthenticationPrincipal AppUser user,
                                                 @PathVariable Long dictionaryId) {
@@ -82,5 +97,12 @@ public class AuthController {
     public ResponseEntity<List<Dictionary>> getFavoritesD(@AuthenticationPrincipal AppUser user) {
         return ResponseEntity.ok(appUserService.getFavoritesD(user.getId()));
     }
+
+    @DeleteMapping("/favorites/{dictionaryId}")
+    public ResponseEntity<AppUser> removeFavoriteD(@AuthenticationPrincipal AppUser user,
+                                                   @PathVariable Long dictionaryId) {
+        return ResponseEntity.ok(appUserService.removeFavoriteD(user.getId(), dictionaryId));
+    }
+
 
 }

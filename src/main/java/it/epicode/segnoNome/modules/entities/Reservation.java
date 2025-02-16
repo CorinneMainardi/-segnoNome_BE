@@ -19,4 +19,7 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
+
+    @Column(name = "seat_count", nullable = false)
+    private Integer seatCount;
 }

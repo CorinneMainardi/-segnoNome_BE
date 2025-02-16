@@ -39,17 +39,19 @@ public class ReservationController {
 
     @PostMapping
     @PreAuthorize(" hasRole('ROLE_USER')")
-    public ResponseEntity<Reservation>reserveSeat(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal AppUser appUser){
+    public ResponseEntity<Reservation> reserveSeat(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal AppUser appUser) {
         if (appUser == null) {
             throw new RuntimeException("User is not authenticated");
         }
+
         if (!appUser.getRoles().contains(Role.ROLE_USER)) {
-            throw new RuntimeException("Only event organizers can create events");
+            throw new RuntimeException("Only users can reserve seats");
         }
 
         Reservation reservation = reservationSvc.reserveSeat(reservationRequest, appUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(reservation);
     }
+
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{id}")

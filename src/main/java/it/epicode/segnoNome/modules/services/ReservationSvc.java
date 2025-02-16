@@ -49,10 +49,11 @@ public class ReservationSvc {
         AppUser user = userRepository.findById(userId).orElseThrow(() -> new ReservationException("User not found"));
         return reservationRepository.findByUser(user);
     }
+
+
     @Transactional
     public Reservation reserveSeat(@Valid ReservationRequest reservationRequest, @AuthenticationPrincipal AppUser appUser) {
         try {
-
             if (!appUser.getRoles().contains(Role.ROLE_USER)) {
                 throw new AccessDeniedException("You do not have permission to reserve a seat.");
             }
@@ -62,27 +63,19 @@ public class ReservationSvc {
             Event event = eventRepository.findById(reservationRequest.getEventId())
                     .orElseThrow(() -> new EntityNotFoundException("Event not found with ID " + reservationRequest.getEventId()));
 
-
-            boolean reservationExists = reservationRepository.existsByUserAndEvent(user, event);
-            if (reservationExists) {
-                throw new AlreadyExistsException("User already has a reservation for this event");
+            if (event.getAvailableSeats() < reservationRequest.getSeatCount()) {
+                throw new ReservationException("Not enough available seats for event ID " + event.getId());
             }
-
-
-            if (event.getAvailableSeats() <= 0) {
-                throw new ReservationException("No available seats for event ID " + event.getId());
-            }
-
 
             Reservation reservation = new Reservation();
             reservation.setUser(user);
             reservation.setEvent(event);
+            reservation.setSeatCount(reservationRequest.getSeatCount()); // Salva il numero di posti prenotati
 
-            event.setAvailableSeats(event.getAvailableSeats() - 1);
+            event.setAvailableSeats(event.getAvailableSeats() - reservationRequest.getSeatCount());
             eventRepository.save(event);
 
             return reservationRepository.save(reservation);
-
 
         } catch (Exception ex) {
             ex.printStackTrace();

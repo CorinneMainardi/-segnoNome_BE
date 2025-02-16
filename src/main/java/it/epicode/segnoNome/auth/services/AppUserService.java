@@ -4,6 +4,7 @@ package it.epicode.segnoNome.auth.services;
 import it.epicode.segnoNome.auth.dto.requests.UserImgDTO;
 import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.auth.enums.Role;
+import it.epicode.segnoNome.auth.exceptions.InvalidCredentialsException;
 import it.epicode.segnoNome.auth.repositories.AppUserRepository;
 import it.epicode.segnoNome.auth.utils.JwtTokenUtil;
 import it.epicode.segnoNome.modules.entities.Dictionary;
@@ -88,7 +89,7 @@ public class AppUserService {
         return appUserRepository.findByUsername(username);
     }
 
-    public String authenticateUser(String username, String password)  {
+    public String authenticateUser(String username, String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
@@ -97,9 +98,10 @@ public class AppUserService {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             return jwtTokenUtil.generateToken(userDetails);
         } catch (AuthenticationException e) {
-            throw new SecurityException("Credenziali non valide", e);
+            throw new InvalidCredentialsException("❌ Username o password errati", e);
         }
     }
+
 
 
     public AppUser loadUserByUsername(String username)  {
@@ -131,6 +133,23 @@ public class AppUserService {
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        return new ArrayList<>(user.getFavoritesD()); // ✅ Evita problemi di Lazy Loading
+        return new ArrayList<>(user.getFavoritesD());
     }
+    @Transactional
+    public AppUser removeFavoriteD(Long userId, Long dictionaryId) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Dictionary dictionary = dictionaryRepository.findById(dictionaryId)
+                .orElseThrow(() -> new EntityNotFoundException("Dictionary entry not found"));
+
+
+        if (user.getFavoritesD().contains(dictionary)) {
+            user.getFavoritesD().remove(dictionary);
+            appUserRepository.save(user);
+        }
+
+        return user;
+    }
+
 }
