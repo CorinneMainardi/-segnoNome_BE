@@ -38,23 +38,23 @@ public class LessonInterest {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LessonType lessonType;  // ONLINE o IN_PERSON
+    private LessonType lessonType;
 
     @Column(nullable = false)
-    private String preferredDays;  // Es. "Lunedì, Mercoledì"
+    private String preferredDays;
 
     @Column(nullable = false)
-    private String preferredTimes; // Es. "10:00 - 12:00"
+    private String preferredTimes;
 
-    private String city;  // Solo se lezione in presenza
+    private String city;  // Solo se lezioni sono in presenza
 
-    private boolean contacted = false;  // Se l'utente è stato ricontattato
-    private boolean interested = false; // Se è interessato dopo il contatto
-    private boolean toBeRecontacted = false; // Se deve essere ricontattato in futuro
+    private boolean contacted = false;
+    private boolean interested = false;
+    private boolean toBeRecontacted = false;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(columnDefinition = "TEXT")  // Permette di inserire testi lunghi
-    private String note;  // Campo modificabile dal CREATOR
+    @Column(columnDefinition = "TEXT")
+    private String note;
     private boolean handled= false;
 }

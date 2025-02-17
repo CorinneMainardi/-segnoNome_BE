@@ -27,43 +27,50 @@ public class PaymentSvc {
 
     @Value("${paypal.mode}")
     private String mode;
+//createpayment: Riceve l'importo (total) e il token JWT dell'utente (jwtToken).
 
     public String createPayment(Double total, String jwtToken) throws PayPalRESTException {
         System.out.println("🔵 Creazione pagamento per utente autenticato...");
         System.out.println("🔵 Token JWT ricevuto: " + jwtToken);
-
+//Crea un'istanza di APIContext, usando le credenziali di PayPal.
         APIContext apiContext = new APIContext(clientId, clientSecret, mode);
-
+        //imposto l'importo
         Amount amount = new Amount();
+        //imposto la valuta
         amount.setCurrency("EUR");
+        //formatto a 2 decimali
         amount.setTotal(String.format(java.util.Locale.US, "%.2f", total));
 
+        //imposto la transizione con importo e descrizione
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setDescription("Pagamento per il corso di segni");
-
+        //aggiungo la transazione alla lista perché paypal può gestire più transazioni contemporaneamnente
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
 
+        //creo un payer e imposto il metodo di pagamento
         Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
-
+        // creo un pagamento e imposto:l'intento il payer e le trasazioni
         Payment payment = new Payment();
         payment.setIntent("sale");
         payment.setPayer(payer);
         payment.setTransactions(transactions);
 
-        // ✅ Aggiunge il token JWT nell'URL di ritorno
+        // aggiungo il token JWT nell'URL di ritorno
         RedirectUrls redirectUrls = new RedirectUrls();
+        //imposto l'url in caso di pagamento fallito
         redirectUrls.setCancelUrl("http://localhost:4200/payment-failed");
+        //imposto l'url in caso di pagamento andato a buon fine. cambia ogni volta che scadengrok
         redirectUrls.setReturnUrl("https://6845-2-39-147-198.ngrok-free.app/api/payments/execute-payment?jwtToken=" + jwtToken);
 
 
 
         payment.setRedirectUrls(redirectUrls);
-
+        //invio il pagamento a paypal che mi restituisce l'oggetto createdPayment
         Payment createdPayment = payment.create(apiContext);
-
+        // link di approvazione dove l'utente deve completare il pagamento
         String approvalUrl = createdPayment.getLinks().stream()
                 .filter(link -> link.getRel().equalsIgnoreCase("approval_url"))
                 .findFirst()
@@ -71,24 +78,26 @@ public class PaymentSvc {
                 .getHref();
 
         System.out.println("✅ Payment created. Approval URL: " + approvalUrl);
+        //restiusce url così il fe sa dove deve andare
         return approvalUrl;
     }
 
-
+    //riceve l'id payment e payer
     public boolean executePayment(String paymentId, String payerId) throws PayPalRESTException {
         APIContext apiContext = new APIContext(clientId, clientSecret, mode);
-
+    //crea un payment
         Payment payment = new Payment();
         payment.setId(paymentId);
-
+    //creo un paymentExcution per completare il pagamento
         PaymentExecution paymentExecution = new PaymentExecution();
         paymentExecution.setPayerId(payerId);
 
         try {
+            //eseguo il pagamento su paypal
             Payment executedPayment = payment.execute(apiContext, paymentExecution);
             System.out.println("✅ Payment executed successfully! ID: " + executedPayment.getId());
 
-            // 🔥 Verifica se lo stato del pagamento è "approved"
+            //  Verifico se lo stato del pagamento sia "approved"
             if ("approved".equalsIgnoreCase(executedPayment.getState())) {
                 System.out.println("✅ Il pagamento è stato approvato!");
                 return true;

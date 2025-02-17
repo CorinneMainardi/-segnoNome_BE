@@ -33,7 +33,7 @@ public class CloudinarySvc {
     public String uploadImage(String base64Image) {
         try {
             Map uploadResult = cloudinary.uploader().upload(base64Image, ObjectUtils.emptyMap());
-            return (String) uploadResult.get("secure_url"); // ✅ Restituisce l'URL dell'immagine
+            return (String) uploadResult.get("secure_url"); //  Restituisce l'URL dell'immagine
         } catch (IOException e) {
             throw new RuntimeException("Error uploading image to Cloudinary", e);
         }

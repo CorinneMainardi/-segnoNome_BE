@@ -25,27 +25,21 @@ public class LessonInterestController {
         return lessonInterestSvc.getAllRequests(user.getUsername());
     }
 
-    /**
-     * 📌 Gli utenti con ruolo CREATOR o ADMIN possono vedere le richieste GESTITE.
-     */
+
     @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
     @GetMapping("/handled")
     public List<LessonInterest> getHandledRequests(@AuthenticationPrincipal AppUser user) {
         return lessonInterestSvc.getHandledRequests(user.getUsername());
     }
 
-    /**
-     * 📌 Gli utenti con ruolo CREATOR o ADMIN possono vedere le richieste ancora DA GESTIRE.
-     */
+
     @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
     @GetMapping("/pending")
     public List<LessonInterest> getPendingRequests(@AuthenticationPrincipal AppUser user) {
         return lessonInterestSvc.getPendingRequests(user.getUsername());
     }
 
-    /**
-     * 📌 Solo gli utenti con ruolo USER possono creare una richiesta.
-     */
+
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
     public LessonInterest createInterest(@AuthenticationPrincipal AppUser user,
@@ -53,9 +47,6 @@ public class LessonInterestController {
         return lessonInterestSvc.createInterestRequest(request, user.getUsername());
     }
 
-    /**
-     * 📌 Solo gli utenti con ruolo CREATOR possono aggiornare lo stato di una richiesta.
-     */
     @PreAuthorize("hasRole('CREATOR')")
     @PutMapping("/{id}/update-status")
     public LessonInterest updateStatus(@AuthenticationPrincipal AppUser user,
@@ -69,9 +60,7 @@ public class LessonInterestController {
     }
 
 
-    /**
-     * 📌 Solo gli utenti con ruolo CREATOR possono eliminare una richiesta.
-     */
+
     @PreAuthorize("hasRole('CREATOR')")
     @DeleteMapping("/{id}")
     public void deleteRequest(@AuthenticationPrincipal AppUser user, @PathVariable Long id) {
