@@ -27,6 +27,7 @@ import java.util.Set;
 public class AuthController {
 
         private final AppUserService appUserService;
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<List<AppUser>> getAllUsers() {
         List<AppUser> users = appUserService.getAllUsers();

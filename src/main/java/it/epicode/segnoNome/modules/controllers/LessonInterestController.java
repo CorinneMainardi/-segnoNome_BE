@@ -4,6 +4,7 @@ import it.epicode.segnoNome.auth.entities.AppUser;
 import it.epicode.segnoNome.modules.dto.LessonInterestRequest;
 import it.epicode.segnoNome.modules.entities.LessonInterest;
 import it.epicode.segnoNome.modules.services.LessonInterestSvc;
+import it.epicode.segnoNome.modules.services.UserRoleSvc;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +19,13 @@ public class LessonInterestController {
 
     @Autowired
     private LessonInterestSvc lessonInterestSvc;
-
+    @Autowired
+    private UserRoleSvc userRoleSvc;
     @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
     @GetMapping("/all")
     public List<LessonInterest> getAllRequests(@AuthenticationPrincipal AppUser user) {
+       String username = user.getUsername();
+        userRoleSvc.boh(username);
         return lessonInterestSvc.getAllRequests(user.getUsername());
     }
 
@@ -29,6 +33,8 @@ public class LessonInterestController {
     @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
     @GetMapping("/handled")
     public List<LessonInterest> getHandledRequests(@AuthenticationPrincipal AppUser user) {
+        String username = user.getUsername();
+        userRoleSvc.boh(username);
         return lessonInterestSvc.getHandledRequests(user.getUsername());
     }
 
@@ -36,6 +42,8 @@ public class LessonInterestController {
     @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
     @GetMapping("/pending")
     public List<LessonInterest> getPendingRequests(@AuthenticationPrincipal AppUser user) {
+        String username = user.getUsername();
+        userRoleSvc.boh(username);
         return lessonInterestSvc.getPendingRequests(user.getUsername());
     }
 

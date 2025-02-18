@@ -28,37 +28,28 @@ public class LessonInterestSvc {
     @Autowired
     private UserRoleSvc userRoleSvc;
 
-    /**
-     * Restituisce tutte le richieste di interesse per le lezioni.
-     * SOLO utenti con ruolo CREATOR possono accedere a tutte le richieste.
-     */
+
     public List<LessonInterest> getAllRequests(String username) {
-        userRoleSvc.allowedToCreator(username);
+
         return lessonInterestRepository.findAll();
     }
 
-    /**
-     * Restituisce solo le richieste GESTITE.
-     */
+
     public List<LessonInterest> getHandledRequests(String username) {
-        userRoleSvc.allowedToCreator(username);
+
         return lessonInterestRepository.findByHandledTrue();
     }
 
-    /**
-     * Restituisce solo le richieste DA GESTIRE.
-     */
+
     public List<LessonInterest> getPendingRequests(String username) {
-        userRoleSvc.allowedToCreator(username);
+
         return lessonInterestRepository.findByHandledFalse();
     }
 
-    /**
-     * Aggiorna lo stato della richiesta e la marca come "gestita".
-     */
+
     @Transactional
     public LessonInterest updateInterestStatus(Long id, boolean contacted, boolean interested, boolean toBeRecontacted, String note, boolean handled, String username) {
-        AppUser user = userRoleSvc.allowedToCreator(username);
+
 
         LessonInterest lessonInterest = lessonInterestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Request not found"));
@@ -76,16 +67,13 @@ public class LessonInterestSvc {
     }
 
 
-    /**
-     * Creazione di una richiesta di interesse.
-     * SOLO utenti con ruolo USER possono creare una richiesta.
-     */
+
     @Transactional
     public LessonInterest createInterestRequest(@Valid LessonInterestRequest lessonInterestRequest, String username) {
         AppUser user = appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Controllo che solo un USER possa creare una richiesta
+
         if (!user.getRoles().contains(Role.ROLE_USER)) {
             throw new UnauthorizedException("Solo gli utenti con ruolo USER possono creare una richiesta di interesse.");
         }
@@ -105,18 +93,14 @@ public class LessonInterestSvc {
         return lessonInterestRepository.save(lessonInterest);
     }
 
-    /**
 
 
 
-    /**
-     * Elimina una richiesta di interesse.
-     * SOLO utenti con ruolo CREATOR possono eliminare una richiesta.
-     */
+
+
     @Transactional
     public void deleteInterestRequest(Long id, String username) {
-        // Controllo che solo un CREATOR possa eliminare richieste
-        AppUser user = userRoleSvc.allowedToCreator(username);
+
 
         LessonInterest lessonInterest = lessonInterestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Request not found"));

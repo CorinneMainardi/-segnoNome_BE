@@ -53,6 +53,19 @@ public class UserRoleSvc {
         }
     }
 
+    public String boh(String username) {
+        AppUser appUser= appUserRepository.findByUsername(username)
+            .orElseThrow(() -> new it.epicode.segnoNome.modules.exceptions.UnauthorizedException("User not found"));
+        System.out.println("-------------------------------------------------------------------- vaffanculo sono qui!!!" + appUser.getRoles());
+        if ( appUser.getRoles().contains(Role.ROLE_ADMIN) || appUser.getRoles().contains(Role.ROLE_CREATOR)) {
+            return appUser.getUsername();
+        } else {
+
+            throw new UnauthorizedException("Access denied: user does not have the necessary privileges");
+        }
+    }
+
+
 
 
 }
